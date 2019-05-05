@@ -3,8 +3,6 @@ from pynput.keyboard import Key, KeyCode
 
 class VimKeyError(Exception): pass
 
-def to_normal_mode():
-    send_key(Key.esc)
 
 def vimify_modifiers(modifiers):
     alt_keys   = (Key.alt,   Key.alt_l,   Key.alt_r)
@@ -59,10 +57,17 @@ def vimify_special(key):
         raise VimKeyError("Special key not supported by vim")
     
     return map[key]
-            
+
+def enter_normal_mode():
+    send_key(Key.esc)
+
+def clear_buffer():
+    vim.command("%d_")
+
+def get_buffer():
+    return "\n".join(vim.current.buffer)
 
 def to_vim_format(key, modifiers):
-    key_str = ""
     try:
         key_str = key.char
         # return the literal character without `< >`s if no modifiers nor special keys
@@ -71,8 +76,9 @@ def to_vim_format(key, modifiers):
     except:
         # Throws exception if key still is not found
         key_str = vimify_special(key)
-    
-    return "\\<{}{}>".format(vimify_modifiers(modifiers), key_str)
+   
+    modifier_str = vimify_modifiers(modifiers)
+    return "\\<{}{}>".format(modifier_str, key_str)
 
 def send_key(key, modifiers=set()):
     try:
@@ -80,5 +86,5 @@ def send_key(key, modifiers=set()):
         vim.command("call feedkeys(\"{}\", 't')".format(vim_key))
         #print("call feedkeys(\"{}\", 't')".format(vim_key))
     except VimKeyError:
-        return
+        pass
 
