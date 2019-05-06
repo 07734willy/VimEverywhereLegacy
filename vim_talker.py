@@ -1,19 +1,15 @@
 import vim
 from pynput.keyboard import Key, KeyCode
+from keyboard import Keyboard
 
 class VimKeyError(Exception): pass
 
 
 def vimify_modifiers(modifiers):
-    alt_keys   = (Key.alt,   Key.alt_l,   Key.alt_r)
-    cmd_keys   = (Key.cmd,   Key.cmd_l,   Key.cmd_r)
-    ctrl_keys  = (Key.ctrl,  Key.ctrl_l,  Key.ctrl_r)
-    shift_keys = (Key.shift, Key.shift_l, Key.shift_r)
-
-    mappings = { alt_keys : "M-",
-                 cmd_keys : "D-",
-                ctrl_keys : "C-",
-               shift_keys : "S-" }
+    mappings = { Keyboard.alt_keys : "M-",
+                 Keyboard.cmd_keys : "D-",
+                Keyboard.ctrl_keys : "C-",
+               Keyboard.shift_keys : "S-" }
 
     out = ""
     for keys, prefix in mappings.items():
